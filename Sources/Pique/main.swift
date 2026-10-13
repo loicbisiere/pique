@@ -87,6 +87,19 @@ if let i = CommandLine.arguments.firstIndex(of: "--light"), CommandLine.argument
     dispatchMain()
 }
 
+// `Pique --check-update 0.1.0` prints what the update checker would say for that installed version.
+if let i = CommandLine.arguments.firstIndex(of: "--check-update"), CommandLine.arguments.count > i + 1 {
+    let current = CommandLine.arguments[i + 1]
+    URLSession.shared.dataTask(with: URL(string: "https://api.github.com/repos/loicbisiere/pique/releases/latest")!) { data, _, _ in
+        let json = data.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] }
+        guard let tag = json?["tag_name"] as? String else { print("FAIL: no release info"); exit(1) }
+        let latest = tag.hasPrefix("v") ? String(tag.dropFirst()) : tag
+        print("latest=\(latest) installed=\(current) update=\(UpdateChecker.isNewer(latest, than: current))")
+        exit(0)
+    }.resume()
+    dispatchMain()
+}
+
 PiqueApp.main()
 
 struct PiqueApp: App {
@@ -94,7 +107,7 @@ struct PiqueApp: App {
 
     var body: some Scene {
         MenuBarExtra {
-            ContentView(camera: delegate.camera, status: delegate.status, viewer: delegate.viewer)
+            ContentView(camera: delegate.camera, status: delegate.status, viewer: delegate.viewer, updates: delegate.updates)
         } label: {
             MenuBarLabel(status: delegate.status)
         }
@@ -106,6 +119,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     let camera = Camera()
     let status = PrinterStatus()
     let viewer = Viewer()
+    let updates = UpdateChecker()
     private lazy var notifier = Notifier(camera: camera)
 
     // static, not main.swift globals: those are initialized in top-level order, i.e. after PiqueApp.main() runs.
@@ -160,6 +174,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
             }
         }
         updateConnections()
+        updates.onNewVersion = { [weak self] release in
+            guard let self else { return }
+            self.notifier.updateAvailable(release.version, homebrew: self.updates.installedWithHomebrew)
+        }
+        updates.start()
         // Permission is per bundle id: re-ask if notifications are on but macOS has not decided yet (e.g. after a rename).
         if UserDefaults.standard.bool(forKey: Notifier.enabledKey) { Notifier.requestAuthorization { _ in } }
     }
@@ -187,13 +206,14 @@ struct ContentView: View {
     @ObservedObject var camera: Camera
     let status: PrinterStatus
     let viewer: Viewer
+    @ObservedObject var updates: UpdateChecker
     @StateObject private var form = SettingsForm() // not @State: its macro plugin ships only with Xcode, not the CLT
     @AppStorage(AppLanguage.key) private var language = "system"
 
     var body: some View {
         Group {
             if form.editing {
-                SettingsView(form: form) // saving changes the defaults, which reconnects (AppDelegate.updateConnections)
+                SettingsView(form: form, updates: updates) // saving changes the defaults, which reconnects (AppDelegate.updateConnections)
             } else {
                 VStack(spacing: 8) {
                     if let image = camera.image {
@@ -211,7 +231,12 @@ struct ContentView: View {
                         iconButton("macwindow.on.rectangle", help: "Open in a resizable window you can pin on top") {
                             viewer.show(camera: camera, status: status)
                         }
-                        iconButton("gearshape", help: "Settings") { form.edit() }
+                        iconButton("gearshape", help: updates.available == nil ? "Settings" : "Settings · update available") { form.edit() }
+                            .overlay(alignment: .topTrailing) {
+                                if updates.available != nil {
+                                    Circle().fill(Color.blue).frame(width: 6, height: 6).offset(x: -2, y: 1)
+                                }
+                            }
                         iconButton("power", help: "Quit Pique") { NSApp.terminate(nil) }
                     }
                 }

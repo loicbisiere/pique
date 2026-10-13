@@ -108,3 +108,15 @@
 "Turn the chamber light off" = "Éteindre l'éclairage de la chambre";
 "The printer rejected the light command (%@)." = "L'imprimante a refusé la commande d'éclairage (%@).";
 "No answer from the printer to the light command." = "Pas de réponse de l'imprimante à la commande d'éclairage.";
+
+/* Updates */
+"Check for updates" = "Rechercher les mises à jour";
+"Once a day, on GitHub. Pique never installs anything by itself." = "Une fois par jour, sur GitHub. Pique n'installe jamais rien d'elle-même.";
+"Version %@ available" = "Version %@ disponible";
+"Pique %@ · up to date" = "Pique %@ · à jour";
+"Check now" = "Vérifier";
+"Copy" = "Copier";
+"Download" = "Télécharger";
+"Settings · update available" = "Réglages · mise à jour disponible";
+"Pique %@ is available" = "Pique %@ est disponible";
+"Open the Pique settings to download it." = "Ouvrez les réglages de Pique pour la télécharger.";

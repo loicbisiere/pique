@@ -12,6 +12,7 @@ Pique is an independent project, not affiliated with or endorsed by Bambu Lab. "
 - **Light background monitoring**: status only (MQTT, a few KB). No video is pulled while no window is open.
 - **Menu bar icon** whose color follows the printer state.
 - **Chamber light switch** in the menu bar window.
+- **Update check**: once a day Pique looks for a newer release on GitHub and tells you how to update (Homebrew command or download link). It never installs anything by itself.
 - Automatic printer discovery, English and French interface, optional launch at login.
 
 Everything stays on your local network and Pique does not use Bambu's cloud. It only reads from the printer, except for the chamber light switch. Protocol details: [docs/protocol.md](docs/protocol.md).
@@ -84,7 +85,7 @@ The access code Pique needs also grants full control of the printer, so Pique pr
 
 - It is stored in the login Keychain, not in the preferences.
 - It is only sent to a genuine Bambu printer: the printer's TLS certificate must be signed by a Bambu certificate authority (bundled with the app), and its serial number must match the one seen on the first connection. Another device, or another printer at the same address, is refused until you save the settings again.
-- Pique only reads from the printer, apart from the chamber light command, sent only when you click the light button. It opens no listening port except to receive the printers' network announcements.
+- Pique only reads from the printer, apart from the chamber light command, sent only when you click the light button. It opens no listening port except to receive the printers' network announcements. Outside your network, it only contacts `api.github.com` once a day to check for updates (can be turned off in Settings).
 - Notification images can be turned off in Settings (they show the inside of the printer and can appear on the lock screen).
 
 ## Known limitations

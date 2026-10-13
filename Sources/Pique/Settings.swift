@@ -76,6 +76,7 @@ final class SettingsForm: ObservableObject {
 
 struct SettingsView: View {
     @ObservedObject var form: SettingsForm
+    let updates: UpdateChecker
     @StateObject private var discovery = Discovery()
     @AppStorage("backgroundMonitoring") private var background = true
     @AppStorage(Notifier.enabledKey) private var notifications = false
@@ -225,6 +226,8 @@ struct SettingsView: View {
                 if let error = form.loginError {
                     Text(error).font(.caption).foregroundStyle(.red)
                 }
+                Divider()
+                UpdatesRow(updates: updates)
             }
 
             HStack {
@@ -317,5 +320,52 @@ enum AccessCode {
         store(old)
         UserDefaults.standard.removeObject(forKey: "accessCode")
         return old
+    }
+}
+
+/// "Check for updates" switch, current status, and how to update (Homebrew command or release page).
+struct UpdatesRow: View {
+    @ObservedObject var updates: UpdateChecker
+    @AppStorage(UpdateChecker.enabledKey) private var enabled = true
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Check for updates")
+                    Text("Once a day, on GitHub. Pique never installs anything by itself.").font(.caption).foregroundStyle(.secondary)
+                }
+                Spacer()
+                Toggle(isOn: $enabled) { Text("Check for updates") }
+                    .toggleStyle(.switch).controlSize(.small).labelsHidden()
+            }
+            HStack {
+                if let release = updates.available {
+                    Label("Version \(release.version) available", systemImage: "arrow.down.circle.fill").foregroundStyle(.blue)
+                } else if let current = updates.currentVersion {
+                    updates.lastCheck == nil ? Text(verbatim: "Pique \(current)") : Text("Pique \(current) · up to date")
+                }
+                Spacer()
+                Button("Check now") { updates.check() }
+                    .controlSize(.small)
+                    .disabled(updates.currentVersion == nil)
+            }
+            .font(.caption)
+            if let release = updates.available {
+                if updates.installedWithHomebrew {
+                    HStack {
+                        Text(verbatim: "brew upgrade --cask pique").font(.caption.monospaced()).textSelection(.enabled)
+                        Spacer()
+                        Button("Copy") {
+                            NSPasteboard.general.clearContents()
+                            NSPasteboard.general.setString("brew upgrade --cask pique", forType: .string)
+                        }
+                        .controlSize(.small)
+                    }
+                } else {
+                    Button("Download") { NSWorkspace.shared.open(release.page) }.controlSize(.small)
+                }
+            }
+        }
     }
 }

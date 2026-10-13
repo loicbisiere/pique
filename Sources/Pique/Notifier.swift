@@ -57,6 +57,14 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         post(title, UserDefaults.standard.string(forKey: "printerIP") ?? "", image: nil)
     }
 
+    func updateAvailable(_ version: String, homebrew: Bool) {
+        guard enabled else { return }
+        post(String(localized: "Pique \(version) is available", bundle: AppLanguage.bundle),
+             homebrew ? "brew upgrade --cask pique"
+                      : String(localized: "Open the Pique settings to download it.", bundle: AppLanguage.bundle),
+             image: nil)
+    }
+
     func sendTest() {
         snapshot { image in
             self.post(String(localized: "Notifications are on", bundle: AppLanguage.bundle),
