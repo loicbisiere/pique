@@ -1,8 +1,8 @@
-# How Pique talks to the printer
+# How Toothpeek talks to the printer
 
-Everything Pique knows about the local (LAN) protocol of Bambu Lab P1/A1 printers. Tested on a P1S, firmware 01.10.00.00, in normal cloud mode. LAN Only mode and Developer Mode are not required.
+Everything Toothpeek knows about the local (LAN) protocol of Bambu Lab P1/A1 printers. Tested on a P1S, firmware 01.10.00.00, in normal cloud mode. LAN Only mode and Developer Mode are not required.
 
-The printer exposes three things on the local network. Pique uses all three, read-only except for one command (the chamber light):
+The printer exposes three things on the local network. Toothpeek uses all three, read-only except for one command (the chamber light):
 
 | What | Transport | Used for |
 |---|---|---|
@@ -30,14 +30,14 @@ DevSignal.bambu.com: -44
 ```
 
 - Model codes: `C11` P1P, `C12` P1S, `N1` A1 mini, `N2S` A1, `BL-P001` X1C, `BL-P002` X1, `C13` X1E.
-- The printers also broadcast on UDP port 2021, but Bambu Studio binds that port exclusively while it runs, so Pique listens on the 1990 multicast group instead (`NWConnectionGroup` with `allowLocalEndpointReuse`).
+- The printers also broadcast on UDP port 2021, but Bambu Studio binds that port exclusively while it runs, so Toothpeek listens on the 1990 multicast group instead (`NWConnectionGroup` with `allowLocalEndpointReuse`).
 - A unicast or multicast `M-SEARCH` got no reply in our tests: just wait for the next `NOTIFY`.
 
-Code: [`Discovery.swift`](../Sources/Pique/Discovery.swift). Try it: `swift run Pique --discover`.
+Code: [`Discovery.swift`](../Sources/Toothpeek/Discovery.swift). Try it: `swift run Toothpeek --discover`.
 
 ## Camera (port 6000)
 
-Bambu printers use one of two camera protocols. According to [ha-bambulab](https://github.com/greghesp/ha-bambulab/blob/main/custom_components/bambu_lab/pybambu/models.py), P1P, P1S, A1, A1 mini and A2L use the image protocol below, while X1, X1C, X1E, P2S, H2D, H2S, H2C and X2D stream RTSPS on port 322 (`rtsps://bblp:<access code>@<ip>:322/streaming/live/1`, H.264), which Pique does not support yet. The image protocol was first documented by [ha-bambulab](https://github.com/greghesp/ha-bambulab/blob/main/custom_components/bambu_lab/pybambu/bambu_client.py):
+Bambu printers use one of two camera protocols. According to [ha-bambulab](https://github.com/greghesp/ha-bambulab/blob/main/custom_components/bambu_lab/pybambu/models.py), P1P, P1S, A1, A1 mini and A2L use the image protocol below, while X1, X1C, X1E, P2S, H2D, H2S, H2C and X2D stream RTSPS on port 322 (`rtsps://bblp:<access code>@<ip>:322/streaming/live/1`, H.264), which Toothpeek does not support yet. The image protocol was first documented by [ha-bambulab](https://github.com/greghesp/ha-bambulab/blob/main/custom_components/bambu_lab/pybambu/bambu_client.py):
 
 1. Open TCP to `<ip>:6000` and start TLS 1.2. The printer certificate is signed by Bambu's own CA ("BBL CA"), not a public one, so default verification fails: verify the chain against the Bambu CA instead (see [Verifying the printer](#verifying-the-printer)).
 2. Send one 80-byte authentication packet:
@@ -55,10 +55,10 @@ Observations:
 - About **1 frame per second**, 1280×720, 60–90 KB each (~75 KB/s while streaming). This is the P1 camera's limit, not the protocol's.
 - A wrong access code makes the printer close the connection.
 - The camera seems to check only the first 8 characters of the code: a code with extra characters appended was accepted. MQTT does check the whole code, so validate the length (exactly 8) before saving.
-- The stream can stall without the socket closing (printer asleep, Wi-Fi drop). Pique reconnects when no frame arrives for 10 s.
-- Grabbing a single frame (connect, authenticate, read one frame, disconnect) takes about a second. Pique uses that for notifications instead of streaming in the background.
+- The stream can stall without the socket closing (printer asleep, Wi-Fi drop). Toothpeek reconnects when no frame arrives for 10 s.
+- Grabbing a single frame (connect, authenticate, read one frame, disconnect) takes about a second. Toothpeek uses that for notifications instead of streaming in the background.
 
-Code: [`Camera.swift`](../Sources/Pique/Camera.swift). Try it: `swift run Pique --snapshot frame.jpg`.
+Code: [`Camera.swift`](../Sources/Toothpeek/Camera.swift). Try it: `swift run Toothpeek --snapshot frame.jpg`.
 
 ## Status (MQTT on port 8883)
 
@@ -66,8 +66,8 @@ Code: [`Camera.swift`](../Sources/Pique/Camera.swift). Try it: `swift run Pique 
 - Subscribe to `device/<serial>/report`. The broker **closes the connection** on a wildcard subscription (`device/+/report`), so the serial is required.
 - The serial number is the **common name of the printer's TLS certificate** (issuer `BBL CA`), so it can be read during the handshake without asking the user. It is also the `USN` of the discovery packet.
 - Publish `{"pushing":{"sequence_id":"0","command":"pushall"}}` to `device/<serial>/request` to get a full report right away. Without it, P1 printers only send **deltas** (changed fields), so the client must merge every report into the previous state.
-- A wrong access code: the broker closes the socket **without a CONNACK**. Pique shows this as "check the access code".
-- Keepalive: send `PINGREQ` regularly (Pique: every 30 s, keepalive 60 s); treat 90 s of silence as a dead connection.
+- A wrong access code: the broker closes the socket **without a CONNACK**. Toothpeek shows this as "check the access code".
+- Keepalive: send `PINGREQ` regularly (Toothpeek: every 30 s, keepalive 60 s); treat 90 s of silence as a dead connection.
 
 Useful fields of the `print` object in the report:
 
@@ -90,15 +90,15 @@ Useful fields of the `print` object in the report:
 | `print_error` | Error code; `0x0300400C` (50348044) = "task canceled" |
 | `hms` | List of health-management alerts |
 
-A canceled print is reported as `FAILED` with `print_error = 0x0300400C`; that is how Pique tells "canceled" from "failed". `chamber_temper` is meaningless on a P1S, which has no chamber sensor.
+A canceled print is reported as `FAILED` with `print_error = 0x0300400C`; that is how Toothpeek tells "canceled" from "failed". `chamber_temper` is meaningless on a P1S, which has no chamber sensor.
 
-Code: [`Status.swift`](../Sources/Pique/Status.swift). Try it: `swift run Pique --status`.
+Code: [`Status.swift`](../Sources/Toothpeek/Status.swift). Try it: `swift run Toothpeek --status`.
 
 ## Verifying the printer
 
 Both TLS services present the same certificate chain: a leaf whose common name is the printer serial, issued by `BBL CA` (`C=CN, O=BBL Technologies Co., Ltd`; SHA-256 `03:0B:CA:81:CE:CE:18:B7:EF:F3:CF:D2:B7:5D:09:D3:EF:CA:89:3B:C0:69:60:9E:37:FA:04:25:7F:E4:D8:40`, valid until 2032). The printer sends the CA too. Newer models use `BBL CA2` (RSA and ECC variants); [ha-bambulab ships all of them](https://github.com/greghesp/ha-bambulab/tree/main/custom_components/bambu_lab/pybambu/certs).
 
-Pique ([`Trust.swift`](../Sources/Pique/Trust.swift)) accepts the connection only if:
+Toothpeek ([`Trust.swift`](../Sources/Toothpeek/Trust.swift)) accepts the connection only if:
 
 1. the chain validates against the bundled Bambu CAs alone (`SecTrustSetAnchorCertificatesOnly`), with the basic X.509 policy (printers are reached by IP, so there is no host name to match). The evaluation date is capped at March 2032 because `BBL CA` expires before the printer certificates it signed;
 2. the leaf's common name equals the serial recorded on the first successful connection (trust on first use). Saving the settings forgets it.
@@ -109,18 +109,18 @@ A device with any other certificate gets a TLS alert before the access code is s
 
 Commands are published as JSON to `device/<serial>/request`. The printer echoes the command on the report topic with a `result`, then sends the new state in a later `print` report.
 
-Chamber light (the only command Pique sends, when the user clicks the light button):
+Chamber light (the only command Toothpeek sends, when the user clicks the light button):
 
 ```json
 {"system": {"sequence_id": "1", "command": "ledctrl", "led_node": "chamber_light", "led_mode": "on",
             "led_on_time": 500, "led_off_time": 500, "loop_times": 0, "interval_time": 0}}
 ```
 
-Reply: the same object plus `"result": "success", "reason": "success"`, then `lights_report` changes in the next report. Tested on a P1S, firmware 01.10.00.00, cloud mode, Developer Mode off: accepted. Try it: `swift run Pique --light off`.
+Reply: the same object plus `"result": "success", "reason": "success"`, then `lights_report` changes in the next report. Tested on a P1S, firmware 01.10.00.00, cloud mode, Developer Mode off: accepted. Try it: `swift run Toothpeek --light off`.
 
 ## Authorization Control
 
-Since P-series firmware 01.08.02.00 (June 2025), printers reject **control** commands (start a print, heat, move) from unofficial software ([All3DP](https://all3dp.com/4/bambu-lab-limits-third-party-printer-control-with-new-security-update/)). The read paths Pique uses (camera, MQTT subscribe, `pushall`) still work as of firmware 01.10.00.00. The chamber light command (above) is accepted; other commands have not been tried.
+Since P-series firmware 01.08.02.00 (June 2025), printers reject **control** commands (start a print, heat, move) from unofficial software ([All3DP](https://all3dp.com/4/bambu-lab-limits-third-party-printer-control-with-new-security-update/)). The read paths Toothpeek uses (camera, MQTT subscribe, `pushall`) still work as of firmware 01.10.00.00. The chamber light command (above) is accepted; other commands have not been tried.
 
 ## Out of scope: remote access
 

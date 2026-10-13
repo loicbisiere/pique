@@ -1,6 +1,6 @@
 # macOS widget: what we learned (tried October 2026, removed)
 
-We built a WidgetKit widget (desktop and Notification Center) showing a camera snapshot and the print progress. It worked, but we removed it: macOS refreshes widgets too rarely for it to be useful. This page keeps what we learned so a second attempt does not start from zero. Names below use the app's current name (Pique); the experiment ran when it was still called BambuCam.
+We built a WidgetKit widget (desktop and Notification Center) showing a camera snapshot and the print progress. It worked, but we removed it: macOS refreshes widgets too rarely for it to be useful. This page keeps what we learned so a second attempt does not start from zero. Names below use the app's current name (Toothpeek); the experiment ran when it was still called BambuCam.
 
 ## Why it was removed
 
@@ -20,7 +20,7 @@ We built a WidgetKit widget (desktop and Notification Center) showing a camera s
 - **The widget never talks to the printer.** The app, already connected over MQTT in the background, writes two files to a shared App Group container:
   - `status.json`: state, file, percent, ETA, layers, temperatures, AMS spools, online flag, language, update time.
   - `frame.jpg`: a single camera frame.
-- Container: `~/Library/Group Containers/<TEAM_ID>.com.loicbisiere.Pique/`. The group id depends on the signing team, so `bundle.sh` injected it into both `Info.plist` files (custom key) and the code read it with `FileManager.default.containerURL(forSecurityApplicationGroupIdentifier:)`.
+- Container: `~/Library/Group Containers/<TEAM_ID>.com.loicbisiere.Toothpeek/`. The group id depends on the signing team, so `bundle.sh` injected it into both `Info.plist` files (custom key) and the code read it with `FileManager.default.containerURL(forSecurityApplicationGroupIdentifier:)`.
 - The app only exported when a widget was placed: `WidgetCenter.shared.getCurrentConfigurations` (local and cheap), checked on every export (at most every 5 s). Checking only at launch did not work: a widget added later stayed empty for up to 15 minutes.
 - New frame on every state change, then every 15 minutes **only while printing** (no video while idle), using `Camera.grabFrame` (connect for one frame) or the live frame when a window was streaming.
 - The countdown stayed live without reloads thanks to `Text(eta, style: .relative)`.
@@ -32,19 +32,19 @@ SwiftPM cannot build app extensions, so `bundle.sh` compiled it by hand. What co
 
 - **The entry point is mandatory.** Without it, the extension registers (`pluginkit` lists it) but never shows up in the widget gallery, and nothing in the logs says why. These are Xcode's settings for the app-extension product type (`LD_ENTRY_POINT = _NSExtensionMain`, `APPLICATION_EXTENSION_API_ONLY = YES`):
   ```sh
-  xcrun swiftc -parse-as-library -O -target arm64-apple-macos14.0 -module-name PiqueWidget \
+  xcrun swiftc -parse-as-library -O -target arm64-apple-macos14.0 -module-name ToothpeekWidget \
     -application-extension -Xlinker -e -Xlinker _NSExtensionMain \
-    Widget/PiqueWidget.swift Sources/Pique/Shared.swift \
-    -o Pique.app/Contents/PlugIns/PiqueWidget.appex/Contents/MacOS/PiqueWidget
+    Widget/ToothpeekWidget.swift Sources/Toothpeek/Shared.swift \
+    -o Toothpeek.app/Contents/PlugIns/ToothpeekWidget.appex/Contents/MacOS/ToothpeekWidget
   ```
   (`Shared.swift` held the types used by both the app and the widget.)
-- **Extension `Info.plist`**: `CFBundlePackageType = XPC!`, bundle id `com.loicbisiere.Pique.widget`, and
+- **Extension `Info.plist`**: `CFBundlePackageType = XPC!`, bundle id `com.loicbisiere.Toothpeek.widget`, and
   ```xml
   <key>NSExtension</key><dict><key>NSExtensionPointIdentifier</key><string>com.apple.widgetkit-extension</string></dict>
   ```
-- **Entitlements.** Extension: `com.apple.security.app-sandbox = true` and `com.apple.security.application-groups = [<TEAM_ID>.com.loicbisiere.Pique]`. App: the same group, not sandboxed. A team-prefixed group needs no provisioning profile on macOS.
+- **Entitlements.** Extension: `com.apple.security.app-sandbox = true` and `com.apple.security.application-groups = [<TEAM_ID>.com.loicbisiere.Toothpeek]`. App: the same group, not sandboxed. A team-prefixed group needs no provisioning profile on macOS.
 - **Signing**: extension first, then the app, with the "Apple Development" identity (`security find-identity -v -p codesigning`). The team id is the `OU` field of the certificate.
-- **After installing**: `lsregister -f /Applications/Pique.app`, then `killall chronod` so the gallery and already-placed widgets load the new binary. Without `killall chronod`, a widget sometimes keeps its old rendering, which made us wrongly think a fix did not work.
+- **After installing**: `lsregister -f /Applications/Toothpeek.app`, then `killall chronod` so the gallery and already-placed widgets load the new binary. Without `killall chronod`, a widget sometimes keeps its old rendering, which made us wrongly think a fix did not work.
 
 ## One-time signing setup
 

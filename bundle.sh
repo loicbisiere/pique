@@ -1,5 +1,5 @@
 #!/bin/sh
-# Build build/Pique.app (universal: Apple silicon + Intel).
+# Build build/Toothpeek.app (universal: Apple silicon + Intel).
 #   ./bundle.sh            build only (what CI does)
 #   ./bundle.sh install    build, then install in /Applications
 # VERSION (default 0.0.0-dev) and BUILD_NUMBER (default 1) set the app version.
@@ -14,9 +14,9 @@ build_number="${BUILD_NUMBER:-1}"
 identity=$(security find-identity -v -p codesigning | awk '/Apple Development/ { print $2; exit }')
 
 swift build -c release --arch arm64 --arch x86_64
-bin="$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)/Pique"
+bin="$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)/Toothpeek"
 
-app=build/Pique.app
+app=build/Toothpeek.app
 rm -rf "$app"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp icon/AppIcon.icns "$app/Contents/Resources/"  # regenerate: swift icon/make_icon.swift
@@ -27,9 +27,9 @@ cat > "$app/Contents/Info.plist" <<PLIST
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleIdentifier</key><string>com.loicbisiere.Pique</string>
-  <key>CFBundleName</key><string>Pique</string>
-  <key>CFBundleExecutable</key><string>Pique</string>
+  <key>CFBundleIdentifier</key><string>com.loicbisiere.Toothpeek</string>
+  <key>CFBundleName</key><string>Toothpeek</string>
+  <key>CFBundleExecutable</key><string>Toothpeek</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleDevelopmentRegion</key><string>en</string>
   <key>CFBundleLocalizations</key><array><string>en</string><string>fr</string></array>
@@ -38,7 +38,7 @@ cat > "$app/Contents/Info.plist" <<PLIST
   <key>CFBundleVersion</key><string>$build_number</string>
   <key>LSMinimumSystemVersion</key><string>14.0</string>
   <key>LSUIElement</key><true/>
-  <key>NSLocalNetworkUsageDescription</key><string>Pique connects to your 3D printer on the local network to show its camera.</string>
+  <key>NSLocalNetworkUsageDescription</key><string>Toothpeek connects to your 3D printer on the local network to show its camera.</string>
 </dict>
 </plist>
 PLIST
@@ -47,7 +47,7 @@ codesign --force --sign "${identity:--}" "$app" # "-" = ad hoc when no certifica
 echo "Built $app $version ($([ -n "$identity" ] && echo "signed: Apple Development" || echo "ad hoc"))"
 
 if [ "${1:-}" = install ]; then
-  rm -rf /Applications/Pique.app
+  rm -rf /Applications/Toothpeek.app
   cp -R "$app" /Applications/
-  echo "Installed /Applications/Pique.app"
+  echo "Installed /Applications/Toothpeek.app"
 fi

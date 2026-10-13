@@ -9,7 +9,7 @@ final class UpdateChecker: ObservableObject {
     }
 
     static let enabledKey = "checkForUpdates"
-    private static let latestRelease = URL(string: "https://api.github.com/repos/loicbisiere/pique/releases/latest")!
+    private static let latestRelease = URL(string: "https://api.github.com/repos/loicbisiere/toothpeek/releases/latest")!
 
     @Published private(set) var available: Release?
     @Published private(set) var lastCheck: Date?
@@ -26,7 +26,7 @@ final class UpdateChecker: ObservableObject {
     }()
 
     /// Homebrew keeps a record of installed casks; such users update with `brew upgrade`.
-    let installedWithHomebrew = ["/opt/homebrew/Caskroom/pique", "/usr/local/Caskroom/pique"]
+    let installedWithHomebrew = ["/opt/homebrew/Caskroom/toothpeek", "/usr/local/Caskroom/toothpeek"]
         .contains { FileManager.default.fileExists(atPath: $0) }
 
     private var timer: Timer?

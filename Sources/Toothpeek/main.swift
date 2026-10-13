@@ -1,6 +1,6 @@
 import SwiftUI
 
-// `Pique --snapshot out.jpg` grabs one frame and exits (uses BAMBU_IP / BAMBU_ACCESS_CODE).
+// `Toothpeek --snapshot out.jpg` grabs one frame and exits (uses BAMBU_IP / BAMBU_ACCESS_CODE).
 if let i = CommandLine.arguments.firstIndex(of: "--snapshot") {
     let out = CommandLine.arguments.count > i + 1 ? CommandLine.arguments[i + 1] : "frame.jpg"
     let env = ProcessInfo.processInfo.environment
@@ -23,7 +23,7 @@ if let i = CommandLine.arguments.firstIndex(of: "--snapshot") {
     dispatchMain()
 }
 
-// `Pique --discover` prints printers announcing themselves on the LAN for 15 s.
+// `Toothpeek --discover` prints printers announcing themselves on the LAN for 15 s.
 if CommandLine.arguments.contains("--discover") {
     let discovery = Discovery()
     let printed = discovery.$printers.sink { for p in $0.suffix(1) { print("\(p.name) (\(p.model)) \(p.ip)") } }
@@ -35,7 +35,7 @@ if CommandLine.arguments.contains("--discover") {
     dispatchMain()
 }
 
-// `Pique --status` prints the print status once the printer reports it (uses BAMBU_IP / BAMBU_ACCESS_CODE).
+// `Toothpeek --status` prints the print status once the printer reports it (uses BAMBU_IP / BAMBU_ACCESS_CODE).
 if CommandLine.arguments.contains("--status") {
     let env = ProcessInfo.processInfo.environment
     let status = PrinterStatus()
@@ -58,7 +58,7 @@ if CommandLine.arguments.contains("--status") {
     dispatchMain()
 }
 
-// `Pique --light on|off` switches the chamber light and prints the resulting state (uses BAMBU_IP / BAMBU_ACCESS_CODE).
+// `Toothpeek --light on|off` switches the chamber light and prints the resulting state (uses BAMBU_IP / BAMBU_ACCESS_CODE).
 if let i = CommandLine.arguments.firstIndex(of: "--light"), CommandLine.arguments.count > i + 1 {
     let wanted = CommandLine.arguments[i + 1] == "on"
     let env = ProcessInfo.processInfo.environment
@@ -87,10 +87,10 @@ if let i = CommandLine.arguments.firstIndex(of: "--light"), CommandLine.argument
     dispatchMain()
 }
 
-// `Pique --check-update 0.1.0` prints what the update checker would say for that installed version.
+// `Toothpeek --check-update 0.1.0` prints what the update checker would say for that installed version.
 if let i = CommandLine.arguments.firstIndex(of: "--check-update"), CommandLine.arguments.count > i + 1 {
     let current = CommandLine.arguments[i + 1]
-    URLSession.shared.dataTask(with: URL(string: "https://api.github.com/repos/loicbisiere/pique/releases/latest")!) { data, _, _ in
+    URLSession.shared.dataTask(with: URL(string: "https://api.github.com/repos/loicbisiere/toothpeek/releases/latest")!) { data, _, _ in
         let json = data.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] }
         guard let tag = json?["tag_name"] as? String else { print("FAIL: no release info"); exit(1) }
         let latest = tag.hasPrefix("v") ? String(tag.dropFirst()) : tag
@@ -100,9 +100,9 @@ if let i = CommandLine.arguments.firstIndex(of: "--check-update"), CommandLine.a
     dispatchMain()
 }
 
-PiqueApp.main()
+ToothpeekApp.main()
 
-struct PiqueApp: App {
+struct ToothpeekApp: App {
     @NSApplicationDelegateAdaptor private var delegate: AppDelegate
 
     var body: some Scene {
@@ -122,7 +122,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     let updates = UpdateChecker()
     private lazy var notifier = Notifier(camera: camera)
 
-    // static, not main.swift globals: those are initialized in top-level order, i.e. after PiqueApp.main() runs.
+    // static, not main.swift globals: those are initialized in top-level order, i.e. after ToothpeekApp.main() runs.
     private static var iconCache: [String: NSImage] = [:]
 
     /// Printer frame with an eye and a print bed (same drawing as icon/make_icon.swift, redrawn for 18 pt).
@@ -237,7 +237,7 @@ struct ContentView: View {
                                     Circle().fill(Color.blue).frame(width: 6, height: 6).offset(x: -2, y: 1)
                                 }
                             }
-                        iconButton("power", help: "Quit Pique") { NSApp.terminate(nil) }
+                        iconButton("power", help: "Quit Toothpeek") { NSApp.terminate(nil) }
                     }
                 }
                 .padding(10)

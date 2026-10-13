@@ -12,7 +12,7 @@
 /* Menu bar window */
 "Open in a resizable window you can pin on top" = "Ouvrir dans une fenêtre redimensionnable, épinglable au premier plan";
 "Settings" = "Réglages";
-"Quit Pique" = "Quitter Pique";
+"Quit Toothpeek" = "Quitter Toothpeek";
 
 /* Settings */
 "Printer" = "Imprimante";
@@ -26,7 +26,7 @@
 "General" = "Général";
 "Open at login" = "Lancer à l'ouverture de session";
 "Approve in Login Items…" = "Autoriser dans Éléments d'ouverture…";
-"Login item: %@ (only works from Pique.app)" = "Ouverture de session : %@ (fonctionne seulement depuis Pique.app)";
+"Login item: %@ (only works from Toothpeek.app)" = "Ouverture de session : %@ (fonctionne seulement depuis Toothpeek.app)";
 "Quit" = "Quitter";
 "Cancel" = "Annuler";
 "Save" = "Enregistrer";
@@ -79,7 +79,7 @@
 "Print status only, no video: a few KB, even with the window closed." = "État d'impression seulement, sans vidéo : quelques Ko, même fenêtre fermée.";
 "Start, pause, cancel, end (with a camera frame), printer online/offline." = "Début, pause, annulation, fin (avec une image de la caméra), imprimante en ligne/hors ligne.";
 "Needs background monitoring to work with the window closed." = "Nécessite la surveillance en arrière-plan pour fonctionner fenêtre fermée.";
-"Notifications are blocked for Pique in System Settings." = "Les notifications de Pique sont bloquées dans Réglages Système.";
+"Notifications are blocked for Toothpeek in System Settings." = "Les notifications de Toothpeek sont bloquées dans Réglages Système.";
 "Open…" = "Ouvrir…";
 "Send a test notification" = "Envoyer une notification de test";
 "Print started" = "Impression démarrée";
@@ -111,14 +111,14 @@
 
 /* Updates */
 "Check for updates" = "Rechercher les mises à jour";
-"Once a day, on GitHub. Pique never installs anything by itself." = "Une fois par jour, sur GitHub. Pique n'installe jamais rien d'elle-même.";
+"Once a day, on GitHub. Toothpeek never installs anything by itself." = "Une fois par jour, sur GitHub. Toothpeek n'installe jamais rien d'elle-même.";
 "Version %@ available" = "Version %@ disponible";
 "Check now" = "Vérifier";
 "Copy" = "Copier";
 "Download" = "Télécharger";
 "Settings · update available" = "Réglages · mise à jour disponible";
-"Pique %@ is available" = "Pique %@ est disponible";
-"Open the Pique settings to download it." = "Ouvrez les réglages de Pique pour la télécharger.";
+"Toothpeek %@ is available" = "Toothpeek %@ est disponible";
+"Open the Toothpeek settings to download it." = "Ouvrez les réglages de Toothpeek pour la télécharger.";
 "Checking…" = "Vérification…";
 "Couldn't reach GitHub. Try again later." = "Impossible de joindre GitHub. Réessayez plus tard.";
-"Pique %@ is up to date · checked at %@" = "Pique %@ est à jour · vérifié à %@";
+"Toothpeek %@ is up to date · checked at %@" = "Toothpeek %@ est à jour · vérifié à %@";
