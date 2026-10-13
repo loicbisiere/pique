@@ -113,10 +113,12 @@
 "Check for updates" = "Rechercher les mises à jour";
 "Once a day, on GitHub. Pique never installs anything by itself." = "Une fois par jour, sur GitHub. Pique n'installe jamais rien d'elle-même.";
 "Version %@ available" = "Version %@ disponible";
-"Pique %@ · up to date" = "Pique %@ · à jour";
 "Check now" = "Vérifier";
 "Copy" = "Copier";
 "Download" = "Télécharger";
 "Settings · update available" = "Réglages · mise à jour disponible";
 "Pique %@ is available" = "Pique %@ est disponible";
 "Open the Pique settings to download it." = "Ouvrez les réglages de Pique pour la télécharger.";
+"Checking…" = "Vérification…";
+"Couldn't reach GitHub. Try again later." = "Impossible de joindre GitHub. Réessayez plus tard.";
+"Pique %@ is up to date · checked at %@" = "Pique %@ est à jour · vérifié à %@";

@@ -340,16 +340,38 @@ struct UpdatesRow: View {
                     .toggleStyle(.switch).controlSize(.small).labelsHidden()
             }
             HStack {
-                if let release = updates.available {
+                if updates.checking {
+                    Text("Checking…").foregroundStyle(.secondary)
+                } else if let error = updates.error {
+                    Label { Text(verbatim: error) } icon: { Image(systemName: "exclamationmark.triangle.fill") }
+                        .foregroundStyle(.orange)
+                } else if let release = updates.available {
                     Label("Version \(release.version) available", systemImage: "arrow.down.circle.fill").foregroundStyle(.blue)
                 } else if let current = updates.currentVersion {
-                    updates.lastCheck == nil ? Text(verbatim: "Pique \(current)") : Text("Pique \(current) · up to date")
+                    if let checked = updates.lastCheck {
+                        Label {
+                            Text("Pique \(current) is up to date · checked at \(Text(checked, style: .time))")
+                        } icon: {
+                            Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                        }
+                    } else {
+                        Text(verbatim: "Pique \(current)").foregroundStyle(.secondary)
+                    }
                 }
                 Spacer()
-                Button("Check now") { updates.check() }
-                    .controlSize(.small)
-                    .disabled(updates.currentVersion == nil)
+                Button {
+                    updates.check()
+                } label: {
+                    if updates.checking {
+                        ProgressView().controlSize(.small).frame(width: 40) // same footprint as the label
+                    } else {
+                        Text("Check now")
+                    }
+                }
+                .controlSize(.small)
+                .disabled(updates.currentVersion == nil || updates.checking)
             }
+            .animation(.default, value: updates.checking)
             .font(.caption)
             if let release = updates.available {
                 if updates.installedWithHomebrew {

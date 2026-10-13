@@ -13,6 +13,9 @@ final class UpdateChecker: ObservableObject {
 
     @Published private(set) var available: Release?
     @Published private(set) var lastCheck: Date?
+    @Published private(set) var checking = false
+    /// Why the last check failed (offline, GitHub unreachable or rate-limited); nil after a successful check.
+    @Published private(set) var error: String?
     var onNewVersion: ((Release) -> Void)?
 
     /// Nil when not running from a bundle (`swift run`) or for dev builds: nothing to compare.
@@ -38,15 +41,23 @@ final class UpdateChecker: ObservableObject {
     }
 
     func check() {
-        guard let currentVersion else { return }
+        guard let currentVersion, !checking else { return }
+        checking = true
+        let started = Date()
         URLSession.shared.dataTask(with: Self.latestRelease) { [weak self] data, _, _ in
-            guard let data,
-                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                  let tag = json["tag_name"] as? String,
-                  let page = (json["html_url"] as? String).flatMap(URL.init(string:)) else { return }
-            let version = tag.hasPrefix("v") ? String(tag.dropFirst()) : tag
-            DispatchQueue.main.async {
+            let json = data.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] }
+            let tag = json?["tag_name"] as? String
+            let page = (json?["html_url"] as? String).flatMap(URL.init(string:))
+            // Keep "Checking…" up at least 0.6 s: GitHub often answers in 0.2 s, too fast to notice.
+            DispatchQueue.main.asyncAfter(deadline: .now() + max(0, 0.6 - Date().timeIntervalSince(started))) {
                 guard let self else { return }
+                self.checking = false
+                guard let tag, let page else {
+                    self.error = String(localized: "Couldn't reach GitHub. Try again later.", bundle: AppLanguage.bundle)
+                    return
+                }
+                let version = tag.hasPrefix("v") ? String(tag.dropFirst()) : tag
+                self.error = nil
                 self.lastCheck = Date()
                 guard Self.isNewer(version, than: currentVersion) else { return self.available = nil }
                 let release = Release(version: version, page: page)
