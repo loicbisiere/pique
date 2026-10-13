@@ -1,0 +1,7 @@
+# SwiftPM / bundle.sh outputs
+.build/
+build/
+.swiftpm/
+
+# macOS
+.DS_Store

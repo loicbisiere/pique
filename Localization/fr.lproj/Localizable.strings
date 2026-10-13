@@ -1,0 +1,110 @@
+/* Keys are the English UI strings (used as-is when no translation exists). */
+
+/* Camera status */
+"Not configured" = "Non configurée";
+"Connecting to %@…" = "Connexion à %@…";
+"Live · %@" = "En direct · %@";
+"Disconnected (%@), retrying…" = "Déconnectée (%@), nouvelle tentative…";
+"no frame for 10s" = "aucune image depuis 10 s";
+"connection closed" = "connexion fermée";
+"bad frame size %lld" = "taille d'image invalide (%lld)";
+
+/* Menu bar window */
+"Open in a resizable window you can pin on top" = "Ouvrir dans une fenêtre redimensionnable, épinglable au premier plan";
+"Settings" = "Réglages";
+"Quit Pique" = "Quitter Pique";
+
+/* Settings */
+"Printer" = "Imprimante";
+"IP address" = "Adresse IP";
+"Access code" = "Code d'accès";
+"8 characters" = "8 caractères";
+"8-character code shown on the printer's screen: Settings (gear icon) > WLAN, below the IP address." = "Code à 8 caractères affiché sur l'écran de l'imprimante : Réglages (roue dentée) > WLAN, sous l'adresse IP.";
+"Found on your network" = "Trouvées sur votre réseau";
+"Searching…" = "Recherche…";
+"Use this printer" = "Utiliser cette imprimante";
+"General" = "Général";
+"Open at login" = "Lancer à l'ouverture de session";
+"Approve in Login Items…" = "Autoriser dans Éléments d'ouverture…";
+"Login item: %@ (only works from Pique.app)" = "Ouverture de session : %@ (fonctionne seulement depuis Pique.app)";
+"Quit" = "Quitter";
+"Cancel" = "Annuler";
+"Save" = "Enregistrer";
+
+/* Camera window */
+"Unpin" = "Désépingler";
+"Keep on top of other windows" = "Garder au-dessus des autres fenêtres";
+"Full screen (Esc to exit)" = "Plein écran (Échap pour quitter)";
+"Hide print info" = "Masquer les infos d'impression";
+"Show print info" = "Afficher les infos d'impression";
+
+/* Language */
+"Language" = "Langue";
+"System" = "Système";
+
+/* Print status */
+"Idle" = "Inactive";
+"Preparing" = "Préparation";
+"Printing" = "Impression";
+"Paused" = "En pause";
+"Finished" = "Terminée";
+"Failed" = "Échec";
+"Details" = "Détails";
+"Hide details" = "Masquer les détails";
+"Time remaining" = "Temps restant";
+"Estimated end" = "Fin estimée";
+"Layer" = "Couche";
+"Nozzle" = "Buse";
+"Bed" = "Plateau";
+"Speed" = "Vitesse";
+"Silent" = "Silencieux";
+"Standard" = "Standard";
+"Sport" = "Sport";
+"Ludicrous" = "Extrême";
+"Part fan" = "Ventilateur pièce";
+"Aux fan" = "Ventilateur auxiliaire";
+"Chamber fan" = "Ventilateur chambre";
+"Light" = "Éclairage";
+"On" = "Allumé";
+"Off" = "Éteint";
+"Wi-Fi" = "Wi-Fi";
+"Nozzle size" = "Diamètre buse";
+"The printer reports an error" = "L'imprimante signale une erreur";
+"The access code has exactly 8 characters." = "Le code d'accès fait exactement 8 caractères.";
+"Print info unavailable: the printer refused the connection. Check the access code." = "Infos d'impression indisponibles : l'imprimante a refusé la connexion. Vérifiez le code d'accès.";
+
+/* Background monitoring & notifications */
+"Notifications" = "Notifications";
+"Monitor in the background" = "Surveiller en arrière-plan";
+"Print status only, no video: a few KB, even with the window closed." = "État d'impression seulement, sans vidéo : quelques Ko, même fenêtre fermée.";
+"Start, pause, cancel, end (with a camera frame), printer online/offline." = "Début, pause, annulation, fin (avec une image de la caméra), imprimante en ligne/hors ligne.";
+"Needs background monitoring to work with the window closed." = "Nécessite la surveillance en arrière-plan pour fonctionner fenêtre fermée.";
+"Notifications are blocked for Pique in System Settings." = "Les notifications de Pique sont bloquées dans Réglages Système.";
+"Open…" = "Ouvrir…";
+"Send a test notification" = "Envoyer une notification de test";
+"Print started" = "Impression démarrée";
+"Print paused" = "Impression en pause";
+"Print resumed" = "Impression reprise";
+"Print canceled" = "Impression annulée";
+"Print failed" = "Impression échouée";
+"Print finished" = "Impression terminée";
+"Printer online" = "Imprimante en ligne";
+"Printer offline" = "Imprimante hors ligne";
+"Notifications are on" = "Notifications activées";
+"Print updates will look like this." = "Les notifications d'impression ressembleront à ceci.";
+
+
+/* Review fixes */
+"Printer unreachable at %@." = "Imprimante injoignable à %@.";
+"Offline · last update %@" = "Hors ligne · dernière mise à jour %@";
+"Offline" = "Hors ligne";
+"Connection refused: this device is not a genuine Bambu printer." = "Connexion refusée : cet appareil n'est pas une imprimante Bambu authentique.";
+"This is not the printer you set up (serial %@). Save the settings again to use it." = "Ce n'est pas l'imprimante configurée (numéro de série %@). Enregistrez à nouveau les réglages pour l'utiliser.";
+"Include a camera image" = "Inclure une image de la caméra";
+"The image shows the inside of the printer and can appear on the lock screen." = "L'image montre l'intérieur de l'imprimante et peut s'afficher sur l'écran verrouillé.";
+
+/* Light command */
+"Turn the chamber light on" = "Allumer l'éclairage de la chambre";
+"Turn the chamber light off" = "Éteindre l'éclairage de la chambre";
+"The printer rejected the light command (%@)." = "L'imprimante a refusé la commande d'éclairage (%@).";
+"No answer from the printer to the light command." = "Pas de réponse de l'imprimante à la commande d'éclairage.";
