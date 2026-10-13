@@ -68,7 +68,7 @@ final class SettingsForm: ObservableObject {
                 if newValue { try SMAppService.mainApp.register() } else { try SMAppService.mainApp.unregister() }
                 loginError = nil
             } catch {
-                loginError = String(localized: "Login item: \(error.localizedDescription) (only works from Pique.app)", bundle: AppLanguage.bundle)
+                loginError = String(localized: "Login item: \(error.localizedDescription) (only works from Toothpeek.app)", bundle: AppLanguage.bundle)
             }
         }
     }
@@ -91,7 +91,7 @@ struct SettingsView: View {
                 Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 32, height: 32)
                 VStack(alignment: .leading, spacing: 0) {
                     Text("Settings").font(.headline)
-                    Text(verbatim: "Pique").font(.caption).foregroundStyle(.secondary)
+                    Text(verbatim: "Toothpeek").font(.caption).foregroundStyle(.secondary)
                 }
             }
 
@@ -180,7 +180,7 @@ struct SettingsView: View {
                 }
                 if form.notificationsDenied {
                     HStack {
-                        Text("Notifications are blocked for Pique in System Settings.").font(.caption).foregroundStyle(.red)
+                        Text("Notifications are blocked for Toothpeek in System Settings.").font(.caption).foregroundStyle(.red)
                         Button("Open…") {
                             NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.Notifications-Settings.extension")!)
                         }
@@ -272,11 +272,11 @@ struct SettingsView: View {
 /// belong in the plain-text preferences. Cached after the first read: the app needs it on every reconnect, and
 /// an ad hoc signed build asks for Keychain access again after each update (once "Always Allow" is clicked).
 enum AccessCode {
-    static let didChange = Notification.Name("PiqueAccessCodeDidChange")
+    static let didChange = Notification.Name("ToothpeekAccessCodeDidChange")
 
     private static let query: [String: Any] = [
         kSecClass as String: kSecClassGenericPassword,
-        kSecAttrService as String: "com.loicbisiere.Pique",
+        kSecAttrService as String: "com.loicbisiere.Toothpeek",
         kSecAttrAccount as String: "accessCode",
     ]
     private static var cached: String?
@@ -333,7 +333,7 @@ struct UpdatesRow: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Check for updates")
-                    Text("Once a day, on GitHub. Pique never installs anything by itself.").font(.caption).foregroundStyle(.secondary)
+                    Text("Once a day, on GitHub. Toothpeek never installs anything by itself.").font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer()
                 Toggle(isOn: $enabled) { Text("Check for updates") }
@@ -350,12 +350,12 @@ struct UpdatesRow: View {
                 } else if let current = updates.currentVersion {
                     if let checked = updates.lastCheck {
                         Label {
-                            Text("Pique \(current) is up to date · checked at \(Text(checked, style: .time))")
+                            Text("Toothpeek \(current) is up to date · checked at \(Text(checked, style: .time))")
                         } icon: {
                             Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
                         }
                     } else {
-                        Text(verbatim: "Pique \(current)").foregroundStyle(.secondary)
+                        Text(verbatim: "Toothpeek \(current)").foregroundStyle(.secondary)
                     }
                 }
                 Spacer()
@@ -376,11 +376,11 @@ struct UpdatesRow: View {
             if let release = updates.available {
                 if updates.installedWithHomebrew {
                     HStack {
-                        Text(verbatim: "brew upgrade --cask pique").font(.caption.monospaced()).textSelection(.enabled)
+                        Text(verbatim: "brew upgrade --cask toothpeek").font(.caption.monospaced()).textSelection(.enabled)
                         Spacer()
                         Button("Copy") {
                             NSPasteboard.general.clearContents()
-                            NSPasteboard.general.setString("brew upgrade --cask pique", forType: .string)
+                            NSPasteboard.general.setString("brew upgrade --cask toothpeek", forType: .string)
                         }
                         .controlSize(.small)
                     }

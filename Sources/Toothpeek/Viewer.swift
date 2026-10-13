@@ -20,7 +20,7 @@ final class Viewer: NSObject, ObservableObject, NSWindowDelegate {
                 contentRect: NSRect(x: 0, y: 0, width: 640, height: 360),
                 styleMask: [.titled, .closable, .miniaturizable, .resizable],
                 backing: .buffered, defer: false)
-            window.title = "Pique"
+            window.title = "Toothpeek"
             window.contentAspectRatio = NSSize(width: 16, height: 9)
             window.isReleasedWhenClosed = false
             window.delegate = self

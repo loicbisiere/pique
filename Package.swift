@@ -2,9 +2,9 @@
 import PackageDescription
 
 let package = Package(
-    name: "Pique",
+    name: "Toothpeek",
     platforms: [.macOS(.v14)],
     targets: [
-        .executableTarget(name: "Pique")
+        .executableTarget(name: "Toothpeek")
     ]
 )

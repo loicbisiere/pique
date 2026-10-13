@@ -59,9 +59,9 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
 
     func updateAvailable(_ version: String, homebrew: Bool) {
         guard enabled else { return }
-        post(String(localized: "Pique \(version) is available", bundle: AppLanguage.bundle),
-             homebrew ? "brew upgrade --cask pique"
-                      : String(localized: "Open the Pique settings to download it.", bundle: AppLanguage.bundle),
+        post(String(localized: "Toothpeek \(version) is available", bundle: AppLanguage.bundle),
+             homebrew ? "brew upgrade --cask toothpeek"
+                      : String(localized: "Open the Toothpeek settings to download it.", bundle: AppLanguage.bundle),
              image: nil)
     }
 

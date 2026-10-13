@@ -90,7 +90,7 @@ final class PrinterStatus: ObservableObject {
             case .ready:
                 self.reachedPrinter = true
                 let connect = Self.string("MQTT") + Data([4, 0xC2, 0, 60]) // v3.1.1, user+password, keepalive 60 s
-                    + Self.string("pique-\(UUID().uuidString.prefix(8))") + Self.string("bblp") + Self.string(accessCode)
+                    + Self.string("toothpeek-\(UUID().uuidString.prefix(8))") + Self.string("bblp") + Self.string(accessCode)
                 conn.send(content: Self.packet(0x10, connect), completion: .idempotent)
                 self.lastPacket = Date()
                 self.readPacket(conn, gen: gen)

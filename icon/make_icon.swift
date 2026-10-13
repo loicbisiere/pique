@@ -1,5 +1,5 @@
-// Draws the app icon: a printer (frame + bed) with an eye peeking out. Pique = "peek".
-// Run: swift icon/make_icon.swift   (writes icon/AppIcon.icns). Menu bar version: PiqueApp's menuBarIcon in main.swift.
+// Draws the app icon: a printer (frame + bed) with an eye peeking out. Toothpeek = toothpick + peek.
+// Run: swift icon/make_icon.swift   (writes icon/AppIcon.icns). Menu bar version: ToothpeekApp's menuBarIcon in main.swift.
 import AppKit
 
 let accent = NSColor(red: 0, green: 174 / 255, blue: 66 / 255, alpha: 1) // Bambu Lab green #00AE42

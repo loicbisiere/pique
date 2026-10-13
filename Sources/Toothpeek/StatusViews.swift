@@ -307,7 +307,7 @@ struct Detail: View {
     }
 }
 
-/// Chamber light switch: the first command Pique sends (exploration, see the README roadmap).
+/// Chamber light switch: the first command Toothpeek sends (exploration, see the README roadmap).
 struct LightButton: View {
     @ObservedObject var status: PrinterStatus
 
